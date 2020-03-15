@@ -64,4 +64,7 @@ public class Location {
 		this.radius = radius;
 	}
 
+	public String toString() {
+		return "[" + startTime + ", " + endTime + ", " + lat + ", " + lon + ", " + radius + "]";
+	}
 }

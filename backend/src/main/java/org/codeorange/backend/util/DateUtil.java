@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class DateUtil {
 
-	private static final String ISO8601_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+	public static final String ISO8601_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
 
 	public static long iso8601ToTimestamp(String iso) throws ParseException {
 		return new SimpleDateFormat(ISO8601_FORMAT)
