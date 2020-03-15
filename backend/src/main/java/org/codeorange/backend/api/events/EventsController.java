@@ -21,6 +21,7 @@ import org.hibernate.Transaction;
 
 import org.codeorange.backend.api.data.Location;
 import org.codeorange.backend.db.queries.GetLocationsQueryBuilder;
+import org.codeorange.backend.db.util.DbUtil;
 import org.codeorange.backend.db.util.HibernateUtil;
 
 @RestController
@@ -39,18 +40,24 @@ public class EventsController {
 			session = HibernateUtil.getSessionFactory().openSession();
 
 			Transaction transaction = session.beginTransaction();
-			Query query = GetLocationsQueryBuilder.build(session, eventId, minEntryTime, patientStatus, country);
 
-			List<Object[]> rawLocations = query.list();
 			List<Location> locations = new ArrayList<>();
 
-			for (Object[] rawLocation : rawLocations) {
-				locations.add(new Location(
-					new Date(((BigInteger)rawLocation[0]).longValue()),
-					new Date(((BigInteger)rawLocation[1]).longValue()),
-					(Double)rawLocation[2],
-					(Double)rawLocation[3],
-					(Double)rawLocation[4]));
+			List<String> tableNames = DbUtil.getTablesByCountry(country);
+
+			for (String tableName : tableNames) {
+				Query query = GetLocationsQueryBuilder.build(session, tableName, eventId, minEntryTime, patientStatus, country);
+
+				List<Object[]> rawLocations = query.list();
+
+				for (Object[] rawLocation : rawLocations) {
+					locations.add(new Location(
+						new Date(((BigInteger)rawLocation[0]).longValue()),
+						new Date(((BigInteger)rawLocation[1]).longValue()),
+						(Double)rawLocation[2],
+						(Double)rawLocation[3],
+						(Double)rawLocation[4]));
+				}
 			}
 
 			transaction.commit();

@@ -11,8 +11,8 @@ import org.codeorange.backend.util.DateUtil;
 
 public class GetLocationsQueryBuilder {
 
-	public static Query build(Session session, String eventId, String minEntryTime, String patientStatus, String country)
-			throws ParseException {
+	public static Query build(Session session, String tableName,
+		String eventId, String minEntryTime, String patientStatus, String country) throws ParseException {
 
 		StringBuilder sb = new StringBuilder();
 
@@ -20,7 +20,7 @@ public class GetLocationsQueryBuilder {
 		int currentParamIndex = 0;
 
 		sb.append("SELECT from_timestamp, to_timestamp, lat, lon, radius ")
-		  .append("FROM imported_locations_moh ")
+		  .append("FROM " + tableName + " ")
 		  .append("WHERE event_id = ?" + (++currentParamIndex) + " ");
 
 		namedParams.put(currentParamIndex, eventId);

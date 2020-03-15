@@ -18,7 +18,7 @@ CREATE TABLE `codeorange`.`recorded_locations` (
   INDEX `IDX_PATIENT_STATUS` (`patient_status` ASC),
   INDEX `IDX_RECEIVED` (`received_timestamp` ASC));
 
-CREATE TABLE `codeorange`.`imported_locations_moh` (
+CREATE TABLE `codeorange`.`imported_locations_il_moh` (
   `entry_id` INT NOT NULL AUTO_INCREMENT,
   `event_id` VARCHAR(45) NULL,
   `country` VARCHAR(45) NULL,
