@@ -87,6 +87,8 @@ public class IsraelMOHCovid19DataLoader implements LocationDataLoader {
 				result.add(location);
 			}
 
+			System.out.println("---> Successfully loaded " + result.size() + " locations from Israel MOH API.");
+			
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
