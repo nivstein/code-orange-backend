@@ -29,10 +29,6 @@ public class ImportIsraelMOHCovid19DataTask implements Runnable {
 			return;
 		}
 
-		for (Location location : locations) {
-			System.out.println("--> Loaded location: " + location);
-		}
-
 		String tableName = DbUtil.TABLE_NAME_IMPORTED_LOCATIONS_IL_MOH;
 
 		TableTruncator.truncate(tableName);
