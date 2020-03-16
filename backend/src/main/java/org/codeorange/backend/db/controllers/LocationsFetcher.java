@@ -1,4 +1,4 @@
-package org.codeorange.backend.db.fetchers;
+package org.codeorange.backend.db.controllers;
 
 import java.math.BigInteger;
 import java.text.ParseException;
@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Query;
-import org.hibernate.SessionFactory;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

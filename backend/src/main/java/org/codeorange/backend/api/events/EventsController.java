@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.codeorange.backend.api.data.Location;
-import org.codeorange.backend.db.fetchers.LocationsFetcher;
+import org.codeorange.backend.db.controllers.LocationsFetcher;
 
 @RestController
 public class EventsController {
