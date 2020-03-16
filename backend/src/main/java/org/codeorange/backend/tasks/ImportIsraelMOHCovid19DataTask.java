@@ -25,7 +25,8 @@ public class ImportIsraelMOHCovid19DataTask implements Runnable {
 	private void internalRun() {
 		List<Location> locations = IsraelMOHCovid19DataLoader.create().load();
 
-		if (locations == null) {
+		if ((locations == null) ||
+			(locations.isEmpty())) {
 			return;
 		}
 

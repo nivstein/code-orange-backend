@@ -52,7 +52,8 @@ public class EventsController {
 
 		List<Location> locations = request.getLocations();
 
-		if (locations != null) {
+		if ((locations != null) &&
+			(!locations.isEmpty())) {
 			LocationsInserter.insert(
 				DbUtil.TABLE_NAME_RECORDED_LOCATIONS,
 				eventId,
