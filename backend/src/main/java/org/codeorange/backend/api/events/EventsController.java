@@ -1,9 +1,5 @@
 package org.codeorange.backend.api.events;
 
-import java.math.BigInteger;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -14,15 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.hibernate.Query;
-import org.hibernate.SessionFactory;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
 import org.codeorange.backend.api.data.Location;
-import org.codeorange.backend.db.queries.GetLocationsQueryBuilder;
-import org.codeorange.backend.db.util.DbUtil;
-import org.codeorange.backend.db.util.HibernateUtil;
+import org.codeorange.backend.db.fetchers.LocationsFetcher;
 
 @RestController
 public class EventsController {
@@ -34,44 +23,13 @@ public class EventsController {
 			@RequestParam(value = "patient_status", required = false) String patientStatus,
 			@RequestParam(value = "country",		required = false) String country) {
 
-		Session session = null;
+		List<Location> locations = LocationsFetcher.fetch(eventId, minEntryTime, patientStatus, country);
 
-		try {
-			session = HibernateUtil.getSessionFactory().openSession();
-
-			Transaction transaction = session.beginTransaction();
-
-			List<Location> locations = new ArrayList<>();
-
-			List<String> tableNames = DbUtil.getTablesByCountry(country);
-
-			for (String tableName : tableNames) {
-				Query query = GetLocationsQueryBuilder.build(session, tableName, eventId, minEntryTime, patientStatus, country);
-
-				List<Object[]> rawLocations = query.list();
-
-				for (Object[] rawLocation : rawLocations) {
-					locations.add(new Location(
-						new Date(((BigInteger)rawLocation[0]).longValue()),
-						new Date(((BigInteger)rawLocation[1]).longValue()),
-						(Double)rawLocation[2],
-						(Double)rawLocation[3],
-						(Double)rawLocation[4]));
-				}
-			}
-
-			transaction.commit();
-
-			return ResponseEntity.ok(new GetLocationsResponse(locations));
-		} catch (ParseException e) {
-			e.printStackTrace();
-
+		if (locations == null) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-		} finally {
-			if (session != null) {
-				session.close();
-			}
 		}
+
+		return ResponseEntity.ok(new GetLocationsResponse(locations));
 	}
 
 	@PostMapping("/v1/events/{eventId}/locations")
