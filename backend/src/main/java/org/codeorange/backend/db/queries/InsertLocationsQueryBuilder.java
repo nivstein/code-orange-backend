@@ -10,6 +10,7 @@ import org.hibernate.Session;
 
 import org.codeorange.backend.data.Location;
 import org.codeorange.backend.util.DateUtil;
+import org.codeorange.backend.util.StringUtil;
 
 public class InsertLocationsQueryBuilder {
 
@@ -24,7 +25,7 @@ public class InsertLocationsQueryBuilder {
 
 		sb.append("INSERT INTO `" + tableName + "` (")
 		  .append("`event_id`, `country`, `from_timestamp`, `to_timestamp`, ") // device ID remains null (FFU)
-		  .append("`lat`, `lon`, `radius`, `patient_status`, `received_timestamp`) ")
+		  .append("`lat`, `lon`, `radius`, `name`, `comments`, `patient_status`, `received_timestamp`) ")
 		  .append("VALUES ");
 
 		for (int i = 0; i < locations.size(); i++) {
@@ -50,6 +51,12 @@ public class InsertLocationsQueryBuilder {
 
 			sb.append("?" + (++currentParamIndex) + ", ");
 			namedParams.put(currentParamIndex, Double.toString(location.getRadius()));
+
+			sb.append("?" + (++currentParamIndex) + ", ");
+			namedParams.put(currentParamIndex, StringUtil.nonNull(location.getName()));
+
+			sb.append("?" + (++currentParamIndex) + ", ");
+			namedParams.put(currentParamIndex, StringUtil.nonNull(location.getComments()));
 
 			sb.append("?" + (++currentParamIndex) + ", ");
 			namedParams.put(currentParamIndex, patientStatus);

@@ -35,7 +35,7 @@ public class HibernateUtil {
 
 		Map<String, Object> settings = new HashMap<>(); //NNNTODO: KILL THIS WHOLE THING
 		settings.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
-		settings.put(Environment.URL, "jdbc:mysql://localhost:3306/codeorange");
+		settings.put(Environment.URL, "jdbc:mysql://localhost:3306/codeorange?useUnicode=true&characterEncoding=utf8");
 		settings.put(Environment.USER, "root");
 		settings.put(Environment.PASS, "root");
 

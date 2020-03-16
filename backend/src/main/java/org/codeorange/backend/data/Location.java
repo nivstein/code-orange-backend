@@ -19,7 +19,12 @@ public class Location {
 
 	private double radius;
 
-	public Location(Date startTime, Date endTime, double lat, double lon, double radius) {
+	private String name;
+	private String comments;
+
+	public Location(Date startTime, Date endTime, double lat, double lon, double radius,
+		String name, String comments) {
+
 		this.startTime = startTime;
 		this.endTime = endTime;
 
@@ -27,6 +32,9 @@ public class Location {
 		this.lon = lon;
 
 		this.radius = radius;
+
+		this.name = name;
+		this.comments = comments;
 	}
 
 	public Date getStartTime() {
@@ -64,7 +72,18 @@ public class Location {
 		this.radius = radius;
 	}
 
-	public String toString() {
-		return "[" + startTime + ", " + endTime + ", " + lat + ", " + lon + ", " + radius + "]";
+	public String getName() {
+		return this.name;
 	}
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getComments() {
+		return this.comments;
+	}
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+
 }

@@ -40,7 +40,9 @@ public class LocationsFetcher {
 						new Date(((BigInteger)rawLocation[1]).longValue()),
 						(Double)rawLocation[2],
 						(Double)rawLocation[3],
-						(Double)rawLocation[4]));
+						(Double)rawLocation[4],
+						(String)rawLocation[5],
+						(String)rawLocation[6]));
 				}
 			}
 

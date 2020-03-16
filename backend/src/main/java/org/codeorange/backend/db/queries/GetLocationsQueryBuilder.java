@@ -19,7 +19,7 @@ public class GetLocationsQueryBuilder {
 		Map<Integer, String> namedParams = new HashMap<>();
 		int currentParamIndex = 0;
 
-		sb.append("SELECT from_timestamp, to_timestamp, lat, lon, radius ")
+		sb.append("SELECT from_timestamp, to_timestamp, lat, lon, radius, name, comments ")
 		  .append("FROM " + tableName + " ")
 		  .append("WHERE event_id = ?" + (++currentParamIndex) + " ");
 

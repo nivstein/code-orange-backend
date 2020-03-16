@@ -82,9 +82,10 @@ public class IsraelMOHCovid19DataLoader implements LocationDataLoader {
 					continue;
 				}
 
-				Location location = new Location(new Date(fromTime), new Date(toTime), lat, lon, 0.0);
+				String name = properties.getPlace();
+				String comments = properties.getComments();
 
-				result.add(location);
+				result.add(new Location(new Date(fromTime), new Date(toTime), lat, lon, 0.0, name, comments));
 			}
 
 			return result;
