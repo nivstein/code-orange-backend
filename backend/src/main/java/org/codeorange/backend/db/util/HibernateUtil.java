@@ -10,6 +10,8 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Environment;
 
+import org.codeorange.backend.AppProperties;
+
 public class HibernateUtil {
 
 	private static volatile SessionFactory sessionFactory = null;
@@ -30,14 +32,17 @@ public class HibernateUtil {
 		return sessionFactory;
 	}
 
+	private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
+
 	private static SessionFactory createSessionFactory() {
 		StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder();
 
-		Map<String, Object> settings = new HashMap<>(); //NNNTODO: KILL THIS WHOLE THING
-		settings.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
-		settings.put(Environment.URL, "jdbc:mysql://localhost:3306/codeorange?useUnicode=true&characterEncoding=utf8");
-		settings.put(Environment.USER, "root");
-		settings.put(Environment.PASS, "root");
+		Map<String, Object> settings = new HashMap<>();
+
+		settings.put(Environment.DRIVER, JDBC_DRIVER);
+		settings.put(Environment.URL,	 AppProperties.get().get("spring.datasource.url"));
+		settings.put(Environment.USER,	 AppProperties.get().get("spring.datasource.username"));
+		settings.put(Environment.PASS,	 AppProperties.get().get("spring.datasource.password"));
 
 		registryBuilder.applySettings(settings);
 
@@ -48,4 +53,5 @@ public class HibernateUtil {
 
 		return metadata.getSessionFactoryBuilder().build();
 	}
+
 }
