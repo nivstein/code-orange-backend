@@ -2,7 +2,7 @@ package org.codeorange.backend.api.events;
 
 import java.util.List;
 
-import org.codeorange.backend.api.data.Location;
+import org.codeorange.backend.data.Location;
 
 public class GetLocationsResponse {
 

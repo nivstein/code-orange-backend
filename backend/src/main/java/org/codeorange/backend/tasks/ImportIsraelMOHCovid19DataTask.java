@@ -2,9 +2,9 @@ package org.codeorange.backend.tasks;
 
 import java.util.List;
 
-import org.codeorange.backend.api.data.Location;
 import org.codeorange.backend.data.Country;
 import org.codeorange.backend.data.Event;
+import org.codeorange.backend.data.Location;
 import org.codeorange.backend.data.PatientStatus;
 import org.codeorange.backend.datasource.ilmoh.IsraelMOHCovid19DataLoader;
 import org.codeorange.backend.db.controllers.LocationsInserter;

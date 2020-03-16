@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.codeorange.backend.api.data.Location;
 import org.codeorange.backend.data.Country;
 import org.codeorange.backend.data.Event;
+import org.codeorange.backend.data.Location;
 import org.codeorange.backend.data.PatientStatus;
 import org.codeorange.backend.db.controllers.LocationsFetcher;
 import org.codeorange.backend.db.controllers.LocationsInserter;

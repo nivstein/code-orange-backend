@@ -8,7 +8,7 @@ import java.util.Map;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import org.codeorange.backend.api.data.Location;
+import org.codeorange.backend.data.Location;
 import org.codeorange.backend.util.DateUtil;
 
 public class InsertLocationsQueryBuilder {

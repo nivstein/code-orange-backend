@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.apache.commons.io.IOUtils;
 
-import org.codeorange.backend.api.data.Location;
+import org.codeorange.backend.data.Location;
 import org.codeorange.backend.datasource.LocationDataLoader;
 
 public class IsraelMOHCovid19DataLoader implements LocationDataLoader {

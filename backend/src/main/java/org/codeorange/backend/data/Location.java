@@ -1,4 +1,4 @@
-package org.codeorange.backend.api.data;
+package org.codeorange.backend.data;
 
 import java.util.Date;
 
