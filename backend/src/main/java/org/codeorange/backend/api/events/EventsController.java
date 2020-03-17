@@ -128,7 +128,7 @@ public class EventsController {
 		String fromAddress = AppProperties.get().get("code-orange.email.from-address");
 		String toAddress = AppProperties.get().get("code-orange.il-moh-report.to-address");
 
-		String subjectFormat = AppProperties.get().get("code-orange.il-moh-report.subject-format");
+		String subjectFormat = "צבע כתום: [קוד חולה: %d] חולה COVID-19 מאומת";
 		String subject = String.format(subjectFormat, patientCode);
 
 		String body = buildIsraelMOHReportEmailBody(patientCode, locations);
@@ -147,15 +147,16 @@ public class EventsController {
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("<h1>Forwarded details for COVID-19 confirmed patient</h1>");
-		sb.append("<h2>Patient code: <b>").append(patientCode).append("</b></h2>");
+		sb.append("<div dir=\"rtl\">");
+		sb.append("<h1>פרטי חולה מאומת מאפליקציית צבע כתום</h1>");
+		sb.append("<h2>קוד חולה: <b>").append(patientCode).append("</b></h2>");
 
-		sb.append("Over the past 14 days, the patient has visited the following locations:<br><br>");
+		sb.append("במהלך 14 הימים האחרונים, החולה ביקר במיקומים הבאים:<br><br>");
 
 		List<Location> sortedLocations = new ArrayList<>(locations);
 		sortedLocations.sort((l1, l2) -> l1.getStartTime().compareTo(l2.getStartTime()));
 
-		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
+		DateFormat dateFormat = new SimpleDateFormat("dd.MM.yy");
         dateFormat.setTimeZone(TimeZone.getTimeZone("Israel"));
 
         DateFormat timeFormat = new SimpleDateFormat("HH:mm");
@@ -174,11 +175,12 @@ public class EventsController {
 			  .append("<b>").append(dateFormat.format(startTime)).append("</b> ")
 			  .append(timeFormat.format(startTime)).append("-").append(timeFormat.format(endTime))
 			  .append(": <b>").append(lat).append(", ").append(lon).append("</b>")
-			  .append(" (<a href=\"https://maps.google.com/?q=").append(lat).append(',').append(lon).append("\">Show on map</a>)")
+			  .append(" (<a href=\"https://maps.google.com/?q=").append(lat).append(',').append(lon).append("\">הצג על מפה</a>)")
 			  .append("<br>");
 		}
 
-		sb.append("<br><b><i>Forwarded by Code Orange.</i></b>");
+		sb.append("<br><b><i>נאסף ונשלח על-ידי אפליקציית צבע כתום.</i></b>");
+		sb.append("</div>");
 
 		return sb.toString();
 	}
