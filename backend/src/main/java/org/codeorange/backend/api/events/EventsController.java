@@ -38,11 +38,18 @@ public class EventsController {
 			@RequestParam(value = "patient_status", required = false) String patientStatus,
 			@RequestParam(value = "country",		required = false) String country) {
 
+		System.out.println("Received GetLocations request: [" +
+			eventId + ", " + minEntryTime + ", " + patientStatus + ", " + country + "]");
+
 		List<Location> locations = LocationsFetcher.fetch(eventId, minEntryTime, patientStatus, country);
 
 		if (locations == null) {
+			System.out.println("No locations retrieved; bad request.");
+
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
+
+		System.out.println("Returning " + locations.size() + " locations.");
 
 		return ResponseEntity.ok(new GetLocationsResponse(locations));
 	}
@@ -52,10 +59,15 @@ public class EventsController {
 			@RequestBody PostLocationsRequest request,
 			@PathVariable(value = "eventId") String eventId) {
 
+		System.out.println("Received UpdateLocations request: [" +
+			eventId + ", " + request.getCountry() + ", " + request.getPatientStatus() + "]");
+
 		//NNNTODO perform generic param validation
 		if ((!Event.COVID_19.getId().equalsIgnoreCase(eventId)) ||
 			(!Country.ISRAEL.getCode().equalsIgnoreCase(request.getCountry())) ||
 			(!PatientStatus.CARRIER.getId().equalsIgnoreCase(request.getPatientStatus()))) {
+			System.out.println("Bad input; bad request.");
+
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 
@@ -63,6 +75,8 @@ public class EventsController {
 
 		if ((locations != null) &&
 			(!locations.isEmpty())) {
+			System.out.println("About to insert " + locations.size() + " locations.");
+
 			LocationsInserter.insert(
 				DbUtil.TABLE_NAME_RECORDED_LOCATIONS,
 				eventId,
@@ -71,6 +85,8 @@ public class EventsController {
 				System.currentTimeMillis(),
 				locations);
 		}
+
+		System.out.println("Done.");
 
 		return ResponseEntity.ok().build();
 	}
@@ -84,7 +100,11 @@ public class EventsController {
 			@RequestBody IsraelMOHReportCarrierRequest request,
 			@PathVariable(value = "eventId") String eventId) {
 
+		System.out.println("Received IsraelMOHReportCarrier request: [" + eventId + ", " + request.getPatientCode() + "]");
+
 		if (!Event.COVID_19.getId().equalsIgnoreCase(eventId)) {
+			System.out.println("Bad event ID; bad request.");
+
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 
@@ -92,6 +112,8 @@ public class EventsController {
 		List<Location> locations = request.getLocations();
 
 		if (locations == null) {
+			System.out.println("No locations received; bad request.");
+
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 
@@ -103,8 +125,13 @@ public class EventsController {
 
 		String body = buildIsraelMOHReportEmailBody(patientCode, locations);
 
+		System.out.println("About to send email: [" + fromAddress + ", " + toAddress + ", " +
+			subject + ", " + body + "]");
+
 		EmailService.get().sendEmail(fromAddress, toAddress, subject, body);
 
+		System.out.println("Done.");
+		
 		return ResponseEntity.ok().build();
 	}
 
