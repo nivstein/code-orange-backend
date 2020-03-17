@@ -11,11 +11,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.apache.commons.io.IOUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.codeorange.backend.data.Location;
 import org.codeorange.backend.datasource.LocationDataLoader;
 
 public class IsraelMOHCovid19DataLoader implements LocationDataLoader {
 	
+	private static final Logger logger = LoggerFactory.getLogger(IsraelMOHCovid19DataLoader.class);
+
 	private static final String API_URL = "https://services5.arcgis.com/" +
 		"dlrDjz89gx9qyfev/ArcGIS/rest/services/Corona_Exposure_View/FeatureServer/0/query" +
 		"?where=1%3D1&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=" +
@@ -38,12 +43,16 @@ public class IsraelMOHCovid19DataLoader implements LocationDataLoader {
 
 	@Override
 	public List<Location> load() {
+		logger.info("About to load Israel MOH COVID-19 location data...");
+
 		InputStream is = null;
 
 		try {
 			is = new URL(API_URL).openStream();
 
 			String rawResponse = IOUtils.toString(is);
+
+			logger.info("Received {} bytes.", rawResponse.length());
 
 			ApiResponse response = new ObjectMapper()
 				.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
@@ -52,6 +61,8 @@ public class IsraelMOHCovid19DataLoader implements LocationDataLoader {
 			List<Location> result = new ArrayList<>();
 
 			List<Feature> features = response.getFeatures();
+			
+			logger.info("Response successfully deserialized, contains {} features.", features.size());
 
 			for (Feature feature : features) {
 				Geometry geometry = feature.getGeometry();
@@ -88,9 +99,11 @@ public class IsraelMOHCovid19DataLoader implements LocationDataLoader {
 				result.add(new Location(new Date(fromTime), new Date(toTime), lat, lon, 0.0, name, comments));
 			}
 
+			logger.info("Done. Resolved {} locations out of {} features.", result.size(), features.size());
+
 			return result;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error loading Israel MOH data.", e);
 
 			return null;
 		} finally {

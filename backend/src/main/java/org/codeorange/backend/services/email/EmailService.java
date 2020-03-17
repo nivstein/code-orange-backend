@@ -17,7 +17,7 @@ public abstract class EmailService {
 	}
 
 	private static EmailService create() {
-		return new SESEmailService();
+		return SESEmailService.create();
 	}
 
 	public abstract void sendEmail(String from, String to, String subject, String body);

@@ -10,9 +10,14 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Environment;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.codeorange.backend.AppProperties;
 
 public class HibernateUtil {
+
+	private static final Logger logger = LoggerFactory.getLogger(HibernateUtil.class);
 
 	private static volatile SessionFactory sessionFactory = null;
 
@@ -23,7 +28,7 @@ public class HibernateUtil {
 					try {
 						sessionFactory = createSessionFactory();
 					} catch (Exception e) {
-						e.printStackTrace();
+						logger.error("Error creating Hibernate session factory.", e);
 					}
 				}
 			}

@@ -2,6 +2,9 @@ package org.codeorange.backend.tasks;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.codeorange.backend.data.Country;
 import org.codeorange.backend.data.Event;
 import org.codeorange.backend.data.Location;
@@ -13,12 +16,18 @@ import org.codeorange.backend.db.util.DbUtil;
 
 public class ImportIsraelMOHCovid19DataTask implements Runnable {
 	
+	private static final Logger logger = LoggerFactory.getLogger(ImportIsraelMOHCovid19DataTask.class);
+
 	@Override
 	public void run() {
+		logger.info("Running Israel MOH COVID-19 data import task...");
+
 		try {
 			internalRun();
+
+			logger.info("Import task complete.");
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error during import task.", e);
 		}
 	}
 
@@ -27,10 +36,15 @@ public class ImportIsraelMOHCovid19DataTask implements Runnable {
 
 		if ((locations == null) ||
 			(locations.isEmpty())) {
+
+			logger.warn("No locations received from data loader; aborting.");
 			return;
 		}
 
 		String tableName = DbUtil.TABLE_NAME_IMPORTED_LOCATIONS_IL_MOH;
+
+		logger.info("Received {} locations from data loader; about to insert into table {}.",
+			locations.size(), tableName);
 
 		TableTruncator.truncate(tableName);
 

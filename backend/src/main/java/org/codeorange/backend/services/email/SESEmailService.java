@@ -14,24 +14,39 @@ import com.amazonaws.services.simpleemail.model.Destination;
 import com.amazonaws.services.simpleemail.model.Message;
 import com.amazonaws.services.simpleemail.model.SendEmailRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.codeorange.backend.AppProperties;
 
 /*package*/ class SESEmailService extends EmailService {
+
+	private static final Logger logger = LoggerFactory.getLogger(SESEmailService.class);
+
+	public static EmailService create() {
+		AWSCredentials creds = new BasicAWSCredentials(
+				AppProperties.get().get("code-orange.aws-access-key"),
+				AppProperties.get().get("code-orange.aws-secret-key"));
+
+		AmazonSimpleEmailService client =
+				AmazonSimpleEmailServiceClientBuilder.standard()
+					.withRegion(Regions.US_EAST_1)
+					.withCredentials(new AWSStaticCredentialsProvider(creds))
+					.build();
+
+		return new SESEmailService(client);
+	}
+	
+	private final AmazonSimpleEmailService client;
+
+	private SESEmailService(AmazonSimpleEmailService client) {
+		this.client = client;
+	}
 
 	@Override
 	public void sendEmail(String from, String to, String subject, String body) {
 
 		try {
-			AWSCredentials creds = new BasicAWSCredentials(
-					AppProperties.get().get("code-orange.aws-access-key"),
-					AppProperties.get().get("code-orange.aws-secret-key"));
-
-			AmazonSimpleEmailService client =
-					AmazonSimpleEmailServiceClientBuilder.standard()
-						.withRegion(Regions.US_EAST_1)
-						.withCredentials(new AWSStaticCredentialsProvider(creds))
-						.build();
-
 			SendEmailRequest request = new SendEmailRequest()
 					.withDestination(new Destination()
 						.withToAddresses(to))
@@ -50,7 +65,7 @@ import org.codeorange.backend.AppProperties;
 
 			client.sendEmail(request);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error sending email via SES.", e);
 		}
 	}
 

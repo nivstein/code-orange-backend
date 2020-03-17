@@ -8,6 +8,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +34,8 @@ import org.codeorange.backend.util.DateUtil;
 @RestController
 public class EventsController {
 
+	private static final Logger logger = LoggerFactory.getLogger(EventsController.class);
+
 	@GetMapping("/v1/events/{eventId}/locations")
 	public ResponseEntity<GetLocationsResponse> getLocations(
 			@PathVariable(value = "eventId")						  String eventId,
@@ -38,18 +43,18 @@ public class EventsController {
 			@RequestParam(value = "patient_status", required = false) String patientStatus,
 			@RequestParam(value = "country",		required = false) String country) {
 
-		System.out.println("Received GetLocations request: [" +
-			eventId + ", " + minEntryTime + ", " + patientStatus + ", " + country + "]");
+		logger.info("Received getLocations request: [{}; {}; {}; {}].", eventId, minEntryTime, patientStatus, country);
 
 		List<Location> locations = LocationsFetcher.fetch(eventId, minEntryTime, patientStatus, country);
 
 		if (locations == null) {
-			System.out.println("No locations retrieved; bad request.");
+
+			logger.warn("No locations retrieved due to bad request.");
 
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 
-		System.out.println("Returning " + locations.size() + " locations.");
+		logger.info("Returning {} locations.", locations.size());
 
 		return ResponseEntity.ok(new GetLocationsResponse(locations));
 	}
@@ -59,14 +64,14 @@ public class EventsController {
 			@RequestBody PostLocationsRequest request,
 			@PathVariable(value = "eventId") String eventId) {
 
-		System.out.println("Received UpdateLocations request: [" +
-			eventId + ", " + request.getCountry() + ", " + request.getPatientStatus() + "]");
+		logger.info("Received updateLocations request: [{}; {}; {}].", eventId, request.getCountry(), request.getPatientStatus());
 
 		//NNNTODO perform generic param validation
 		if ((!Event.COVID_19.getId().equalsIgnoreCase(eventId)) ||
 			(!Country.ISRAEL.getCode().equalsIgnoreCase(request.getCountry())) ||
 			(!PatientStatus.CARRIER.getId().equalsIgnoreCase(request.getPatientStatus()))) {
-			System.out.println("Bad input; bad request.");
+
+			logger.warn("Bad input ({}; {}; {})!", eventId, request.getCountry(), request.getPatientStatus());
 
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
@@ -75,7 +80,8 @@ public class EventsController {
 
 		if ((locations != null) &&
 			(!locations.isEmpty())) {
-			System.out.println("About to insert " + locations.size() + " locations.");
+
+			logger.info("About to insert {} locations.", locations.size());
 
 			LocationsInserter.insert(
 				DbUtil.TABLE_NAME_RECORDED_LOCATIONS,
@@ -86,7 +92,7 @@ public class EventsController {
 				locations);
 		}
 
-		System.out.println("Done.");
+		logger.info("Done inserting new locations.");
 
 		return ResponseEntity.ok().build();
 	}
@@ -100,10 +106,11 @@ public class EventsController {
 			@RequestBody IsraelMOHReportCarrierRequest request,
 			@PathVariable(value = "eventId") String eventId) {
 
-		System.out.println("Received IsraelMOHReportCarrier request: [" + eventId + ", " + request.getPatientCode() + "]");
+		logger.info("Received Israel MOH reportCarrier request: [{}; {}].", eventId, request.getPatientCode());
 
 		if (!Event.COVID_19.getId().equalsIgnoreCase(eventId)) {
-			System.out.println("Bad event ID; bad request.");
+
+			logger.warn("Bad event ID ({}); returning bad request.", eventId);
 
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
@@ -112,7 +119,8 @@ public class EventsController {
 		List<Location> locations = request.getLocations();
 
 		if (locations == null) {
-			System.out.println("No locations received; bad request.");
+
+			logger.warn("No locations received; returning bad request.");
 
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
@@ -125,12 +133,12 @@ public class EventsController {
 
 		String body = buildIsraelMOHReportEmailBody(patientCode, locations);
 
-		System.out.println("About to send email: [" + fromAddress + ", " + toAddress + ", " +
-			subject + ", " + body + "]");
+		logger.info("About to send email: {} -> {}; \"{}\"; body length: {}.",
+			fromAddress, toAddress, subject, body.length());
 
 		EmailService.get().sendEmail(fromAddress, toAddress, subject, body);
 
-		System.out.println("Done.");
+		logger.info("Done sending email.");
 		
 		return ResponseEntity.ok().build();
 	}

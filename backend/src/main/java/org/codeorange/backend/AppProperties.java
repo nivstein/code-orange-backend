@@ -6,10 +6,15 @@ import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.codeorange.backend.util.EnvVarResolver;
 
 public class AppProperties {
 	
+	private static final Logger logger = LoggerFactory.getLogger(AppProperties.class);
+
 	private static final String FILE_NAME = "application.properties";
 
 	private static volatile AppProperties instance = null;
@@ -27,14 +32,19 @@ public class AppProperties {
 	}
 
 	private static AppProperties create() {
+
+		logger.info("About to load app properties from: {}.", FILE_NAME);
+
 		Properties props = new Properties();
 		InputStream is = null;
 
 		try {
 			is = AppProperties.class.getClassLoader().getResourceAsStream(FILE_NAME);
 			props.load(is);
+
+			logger.info("Successfully loaded {} app properties.", props.size());
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Error loading app properties.", e);
 		} finally {
 			IOUtils.closeQuietly(is);
 		}

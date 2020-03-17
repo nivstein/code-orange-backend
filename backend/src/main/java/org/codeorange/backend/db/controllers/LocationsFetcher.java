@@ -10,6 +10,9 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.codeorange.backend.data.Location;
 import org.codeorange.backend.db.queries.GetLocationsQueryBuilder;
 import org.codeorange.backend.db.util.DbUtil;
@@ -17,7 +20,12 @@ import org.codeorange.backend.db.util.HibernateUtil;
 
 public class LocationsFetcher {
 
+	private static final Logger logger = LoggerFactory.getLogger(LocationsFetcher.class);
+
 	public static List<Location> fetch(String eventId, String minEntryTime, String patientStatus, String country) {
+
+		logger.info("About to fetch locations for [{}; {}; {}; {}].", eventId, minEntryTime, patientStatus, country);
+
 		Session session = null;
 
 		try {
@@ -29,10 +37,14 @@ public class LocationsFetcher {
 
 			List<String> tableNames = DbUtil.getTablesByCountry(country);
 
+			logger.info("Fetching from tables: {}.", tableNames);
+
 			for (String tableName : tableNames) {
 				Query query = GetLocationsQueryBuilder.build(session, tableName, eventId, minEntryTime, patientStatus, country);
 
 				List<Object[]> rawLocations = query.list();
+
+				logger.info("Retrieved {} locations from table {}.", rawLocations.size(), tableName);
 
 				for (Object[] rawLocation : rawLocations) {
 					locations.add(new Location(
@@ -48,9 +60,11 @@ public class LocationsFetcher {
 
 			transaction.commit();
 
+			logger.info("Done. Returning a total of {} locations.", locations.size());
+
 			return locations;
 		} catch (ParseException e) {
-			e.printStackTrace();
+			logger.error("Error fetching locations.", e);
 
 			return null;
 		} finally {
