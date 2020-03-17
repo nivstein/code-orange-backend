@@ -6,6 +6,8 @@ import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 
+import org.codeorange.backend.util.EnvVarResolver;
+
 public class AppProperties {
 	
 	private static final String FILE_NAME = "application.properties";
@@ -47,7 +49,18 @@ public class AppProperties {
 	}
 
 	public String get(String key) {
-		return props.getProperty(key);
+		return get(key, true);
+	}
+
+	public String get(String key, boolean resolveEnvVars) {
+		String value = props.getProperty(key);
+
+		if ((value == null) ||
+			(!resolveEnvVars)) {
+			return value;
+		}
+
+		return EnvVarResolver.resolve(value);
 	}
 
 }
