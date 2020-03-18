@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.codeorange.backend.AppProperties;
 import org.codeorange.backend.data.Location;
 import org.codeorange.backend.services.email.EmailService;
+import org.codeorange.backend.services.geocoding.GeocodingService;
+import org.codeorange.backend.services.geocoding.ReverseGeocodingResult;
 import org.codeorange.backend.util.DateUtil;
 
 //NNNTODO: Kill this class once MOH create their own funnel for this.
@@ -21,7 +23,7 @@ import org.codeorange.backend.util.DateUtil;
 public class IsraelMOHReportCarrierHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(IsraelMOHReportCarrierHandler.class);
-	
+
 	public static void handle(int patientCode, List<Location> locations) {
 		String fromAddress = AppProperties.get().get("code-orange.email.from-address");
 		String toAddress = AppProperties.get().get("code-orange.il-moh-report.to-address");
@@ -29,12 +31,64 @@ public class IsraelMOHReportCarrierHandler {
 		String subjectFormat = "צבע כתום: [קוד חולה: %d] חולה COVID-19 מאומת";
 		String subject = String.format(subjectFormat, patientCode);
 
-		String body = buildEmailBody(patientCode, locations);
+		List<Location> namedLocations = reverseGeocodeLocations(locations);
+
+		String body = buildEmailBody(patientCode, namedLocations);
 
 		logger.info("About to send email: {} -> {}; \"{}\"; body length: {}.",
 			fromAddress, toAddress, subject, body.length());
 
 		EmailService.get().sendEmail(fromAddress, toAddress, subject, body);
+	}
+
+	private static List<Location> reverseGeocodeLocations(List<Location> locations) {
+		List<Location> namedLocations = new ArrayList<>();
+
+		for (int i = 0; i < locations.size(); i++) {
+			Location location = locations.get(i);
+			String name = location.getName();
+
+			if ((name != null) &&
+				(!name.isEmpty())) {
+
+				namedLocations.add(location);
+				continue;
+			}
+
+			double lat = location.getLat();
+			double lon = location.getLon();
+
+			logger.info("Location {} ({}, {}) requires reverse geocoding...", i, lat, lon);
+
+			ReverseGeocodingResult result = GeocodingService.get().reverseGeocode(lat, lon);
+
+			if (result == null) {
+				logger.warn("Unable to reverse geocode location {} ({}, {}).", i, lat, lon);
+
+				namedLocations.add(location);
+				continue;
+			}
+
+			String newName = result.getAddress();
+			boolean isPrecise = result.isPrecise();
+
+			if (!isPrecise) {
+				newName += " (משוערך)";
+			}
+
+			logger.info("Reverse geocoding result for location {} ({}, {}): {}.", i, lat, lon, newName);
+
+			namedLocations.add(new Location(
+				location.getStartTime(),
+				location.getEndTime(),
+				location.getLat(),
+				location.getLon(),
+				location.getRadius(),
+				newName,
+				location.getComments()));
+		}
+
+		return namedLocations;
 	}
 
 	private static String buildEmailBody(int patientCode, List<Location> locations) {
@@ -65,11 +119,22 @@ public class IsraelMOHReportCarrierHandler {
 			double lat = location.getLat();
 			double lon = location.getLon();
 
+			String name = location.getName();
+			String actualName;
+
+			if ((name != null) &&
+				(!name.isEmpty())) {
+				actualName = name;
+			} else {
+				actualName = "(ללא שם)";
+			}
+
 			sb.append("[").append(i + 1).append("] ")
 			  .append("<b>").append(dateFormat.format(startTime)).append("</b> ")
 			  .append(timeFormat.format(startTime)).append("-").append(timeFormat.format(endTime))
-			  .append(": <b>").append(lat).append(", ").append(lon).append("</b>")
-			  .append(" (<a href=\"https://maps.google.com/?q=").append(lat).append(',').append(lon).append("\">הצג על מפה</a>)")
+			  .append(": <b>").append(actualName).append("</b>")
+			  .append(" (").append(lat).append(", ").append(lon).append(")")
+			  .append(" - <a href=\"https://maps.google.com/?q=").append(lat).append(',').append(lon).append("\">הצג על מפה</a>")
 			  .append("<br>");
 		}
 
