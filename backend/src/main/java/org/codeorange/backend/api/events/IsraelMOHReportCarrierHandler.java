@@ -15,7 +15,7 @@ import org.codeorange.backend.AppProperties;
 import org.codeorange.backend.data.Location;
 import org.codeorange.backend.services.email.EmailService;
 import org.codeorange.backend.services.geocoding.GeocodingService;
-import org.codeorange.backend.services.geocoding.ReverseGeocodingResult;
+import org.codeorange.backend.services.geocoding.ReverseGeocoding;
 import org.codeorange.backend.util.DateUtil;
 
 //NNNTODO: Kill this class once MOH create their own funnel for this.
@@ -60,7 +60,7 @@ public class IsraelMOHReportCarrierHandler {
 
 			logger.info("Location {} ({}, {}) requires reverse geocoding...", i, lat, lon);
 
-			ReverseGeocodingResult result = GeocodingService.get().reverseGeocode(lat, lon);
+			ReverseGeocoding result = GeocodingService.get().reverseGeocode(lat, lon);
 
 			if (result == null) {
 				logger.warn("Unable to reverse geocode location {} ({}, {}).", i, lat, lon);

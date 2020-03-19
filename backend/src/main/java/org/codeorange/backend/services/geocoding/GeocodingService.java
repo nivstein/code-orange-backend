@@ -1,5 +1,7 @@
 package org.codeorange.backend.services.geocoding;
 
+import org.codeorange.backend.services.geocoding.google.GoogleGeocodingService;
+
 public abstract class GeocodingService {
 
 	private static volatile GeocodingService instance = null;
@@ -20,6 +22,6 @@ public abstract class GeocodingService {
 		return GoogleGeocodingService.create();
 	}
 
-	public abstract ReverseGeocodingResult reverseGeocode(double lat, double lon);
+	public abstract ReverseGeocoding reverseGeocode(double lat, double lon);
 
 }

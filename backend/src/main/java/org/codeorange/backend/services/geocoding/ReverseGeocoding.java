@@ -1,11 +1,11 @@
 package org.codeorange.backend.services.geocoding;
 
-public class ReverseGeocodingResult {
+public class ReverseGeocoding {
 
 	private final String address;
 	private final boolean isPrecise;
 
-	public ReverseGeocodingResult(String address, boolean isPrecise) {
+	public ReverseGeocoding(String address, boolean isPrecise) {
 		this.address = address;
 		this.isPrecise = isPrecise;
 	}
