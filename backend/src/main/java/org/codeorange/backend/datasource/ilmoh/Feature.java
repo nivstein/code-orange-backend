@@ -1,6 +1,6 @@
 package org.codeorange.backend.datasource.ilmoh;
 
-public class Feature {
+/*package*/ class Feature {
 
 	private Geometry geometry;
 	private Properties properties;

@@ -2,7 +2,7 @@ package org.codeorange.backend.datasource.ilmoh;
 
 import java.util.List;
 
-public class ApiResponse {
+/*package*/ class ApiResponse {
 
 	private List<Feature> features;
 

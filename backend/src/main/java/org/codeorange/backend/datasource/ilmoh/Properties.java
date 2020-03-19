@@ -2,7 +2,7 @@ package org.codeorange.backend.datasource.ilmoh;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Properties {
+/*package*/ class Properties {
 
 	private long fromTime;
 	private long toTime;

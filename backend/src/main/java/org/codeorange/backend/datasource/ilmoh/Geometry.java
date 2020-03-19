@@ -2,7 +2,7 @@ package org.codeorange.backend.datasource.ilmoh;
 
 import java.util.List;
 
-public class Geometry {
+/*package*/ class Geometry {
 
 	private List<Double> coordinates;
 
