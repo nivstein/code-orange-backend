@@ -3,8 +3,6 @@ package org.codeorange.backend.services.email;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.codeorange.backend.AppProperties;
-
 /*package*/ class LogEmailService extends EmailService {
 
 	private static final Logger logger = LoggerFactory.getLogger(LogEmailService.class);
