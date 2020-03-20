@@ -95,11 +95,11 @@ public class IsraelMOHReportCarrierHandler {
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("<div dir=\"rtl\">");
-		sb.append("<h1>פרטי חולה מאומת מאפליקציית צבע כתום</h1>");
-		sb.append("<h2>קוד חולה: <b>").append(patientCode).append("</b></h2>");
+		sb.append("<div dir=\"rtl\">\n");
+		sb.append("\t<h1>פרטי חולה מאומת מאפליקציית צבע כתום</h1>\n");
+		sb.append("\t<h2>קוד חולה: <b>").append(patientCode).append("</b></h2>\n");
 
-		sb.append("במהלך 14 הימים האחרונים, החולה ביקר במיקומים הבאים:<br><br>");
+		sb.append("\tבמהלך 14 הימים האחרונים, החולה ביקר במיקומים הבאים:<br><br>\n");
 
 		List<Location> sortedLocations = new ArrayList<>(locations);
 		sortedLocations.sort((l1, l2) -> l1.getStartTime().compareTo(l2.getStartTime()));
@@ -129,17 +129,17 @@ public class IsraelMOHReportCarrierHandler {
 				actualName = "(ללא שם)";
 			}
 
-			sb.append("[").append(i + 1).append("] ")
+			sb.append("\t[").append(i + 1).append("] ")
 			  .append("<b>").append(dateFormat.format(startTime)).append("</b> ")
 			  .append(timeFormat.format(startTime)).append("-").append(timeFormat.format(endTime))
 			  .append(": <b>").append(actualName).append("</b>")
 			  .append(" (").append(lat).append(", ").append(lon).append(")")
 			  .append(" - <a href=\"https://maps.google.com/?q=").append(lat).append(',').append(lon).append("\">הצג על מפה</a>")
-			  .append("<br>");
+			  .append("<br>\n");
 		}
 
-		sb.append("<br><b><i>נאסף ונשלח על-ידי אפליקציית צבע כתום.</i></b>");
-		sb.append("</div>");
+		sb.append("\t<br><b><i>נאסף ונשלח על-ידי אפליקציית צבע כתום.</i></b>\n");
+		sb.append("</div>\n");
 
 		return sb.toString();
 	}
