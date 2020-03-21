@@ -40,7 +40,7 @@ public class LocationsFetcher {
 			logger.info("Fetching from tables: {}.", tableNames);
 
 			for (String tableName : tableNames) {
-				Query query = GetLocationsQueryBuilder.build(session, tableName, eventId, minEntryTime, patientStatus, country);
+				Query<Object[]> query = GetLocationsQueryBuilder.build(session, tableName, eventId, minEntryTime, patientStatus, country);
 
 				List<Object[]> rawLocations = query.list();
 

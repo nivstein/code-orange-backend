@@ -14,7 +14,7 @@ import org.codeorange.backend.util.StringUtil;
 
 public class InsertLocationsQueryBuilder {
 
-	public static Query build(Session session, String tableName,
+	public static Query<?> build(Session session, String tableName,
 		String eventId, String patientStatus, String country, long receivedTimestamp,
 		List<Location> locations) {
 
@@ -67,7 +67,7 @@ public class InsertLocationsQueryBuilder {
 			sb.append((i == locations.size() - 1) ? "; " : ", ");
 		}
 
-		Query query = session.createNativeQuery(sb.toString());
+		Query<?> query = session.createNativeQuery(sb.toString());
 
 		for (Map.Entry<Integer, String> namedParam : namedParams.entrySet()) {
 			query.setParameter(namedParam.getKey(), namedParam.getValue());

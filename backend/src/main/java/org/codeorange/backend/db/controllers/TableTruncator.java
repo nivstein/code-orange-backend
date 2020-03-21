@@ -24,7 +24,7 @@ public class TableTruncator {
 			session = HibernateUtil.getSessionFactory().openSession();
 
 			Transaction transaction = session.beginTransaction();
-			Query query = TruncateTableQueryBuilder.build(session, tableName);
+			Query<?> query = TruncateTableQueryBuilder.build(session, tableName);
 			
 			query.executeUpdate();
 			

@@ -11,7 +11,7 @@ import org.codeorange.backend.util.DateUtil;
 
 public class GetLocationsQueryBuilder {
 
-	public static Query build(Session session, String tableName,
+	public static Query<Object[]> build(Session session, String tableName,
 		String eventId, String minEntryTime, String patientStatus, String country) throws ParseException {
 
 		StringBuilder sb = new StringBuilder();
@@ -42,7 +42,8 @@ public class GetLocationsQueryBuilder {
 			namedParams.put(currentParamIndex, country);
 		}
 
-		Query query = session.createNativeQuery(sb.toString());
+		@SuppressWarnings("unchecked")
+		Query<Object[]> query = session.createNativeQuery(sb.toString());
 
 		for (Map.Entry<Integer, String> namedParam : namedParams.entrySet()) {
 			query.setParameter(namedParam.getKey(), namedParam.getValue());
