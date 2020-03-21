@@ -1,6 +1,7 @@
 package org.codeorange.backend.services.geocoding.google;
 
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.io.InputStream;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class GoogleGeocodingService extends GeocodingService {
 
 			is = new URL(url).openStream();
 
-			String rawResponse = IOUtils.toString(is);
+			String rawResponse = IOUtils.toString(is, StandardCharsets.UTF_8);
 
 			logger.info("Received {} bytes.", rawResponse.length());
 

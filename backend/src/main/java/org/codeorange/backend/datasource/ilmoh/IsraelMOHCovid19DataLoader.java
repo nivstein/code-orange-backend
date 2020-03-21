@@ -1,6 +1,7 @@
 package org.codeorange.backend.datasource.ilmoh;
 
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ public class IsraelMOHCovid19DataLoader implements LocationDataLoader {
 		try {
 			is = new URL(API_URL).openStream();
 
-			String rawResponse = IOUtils.toString(is);
+			String rawResponse = IOUtils.toString(is, StandardCharsets.UTF_8);
 
 			logger.info("Received {} bytes.", rawResponse.length());
 
