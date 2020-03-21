@@ -25,6 +25,10 @@ dependencies {
 	}
 }
 
+compileJava {
+	options.compilerArgs += ["-Xlint"]
+}
+
 test {
 	useJUnitPlatform()
 }
