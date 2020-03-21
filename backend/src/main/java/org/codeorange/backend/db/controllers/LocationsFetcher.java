@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +40,7 @@ public class LocationsFetcher {
 			logger.info("Fetching from tables: {}.", tableNames);
 
 			for (String tableName : tableNames) {
-				Query query = GetLocationsQueryBuilder.build(session, tableName, eventId, minEntryTime, patientStatus, country);
+				Query<Object[]> query = GetLocationsQueryBuilder.build(session, tableName, eventId, minEntryTime, patientStatus, country);
 
 				List<Object[]> rawLocations = query.list();
 

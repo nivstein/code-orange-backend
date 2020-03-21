@@ -1,8 +1,8 @@
 package org.codeorange.backend.db.controllers;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +24,7 @@ public class TableTruncator {
 			session = HibernateUtil.getSessionFactory().openSession();
 
 			Transaction transaction = session.beginTransaction();
-			Query query = TruncateTableQueryBuilder.build(session, tableName);
+			Query<?> query = TruncateTableQueryBuilder.build(session, tableName);
 			
 			query.executeUpdate();
 			

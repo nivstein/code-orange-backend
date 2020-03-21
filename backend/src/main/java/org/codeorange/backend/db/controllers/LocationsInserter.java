@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,7 @@ public class LocationsInserter {
 
 				logger.info("About to insert batch {} out of {}...", i + 1, locationBatches.size());
 
-				Query query = InsertLocationsQueryBuilder.build(session, tableName,
+				Query<?> query = InsertLocationsQueryBuilder.build(session, tableName,
 					eventId, patientStatus, country, receivedTimestamp, locationBatch);
 
 				query.executeUpdate();
