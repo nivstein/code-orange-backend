@@ -1,7 +1,7 @@
 package org.codeorange.backend.db.queries;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 public class TruncateTableQueryBuilder {
 
